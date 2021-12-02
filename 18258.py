@@ -3,7 +3,6 @@ from collections import deque
 
 input = sys.stdin.readline
 
-
 t = int(input())
 
 qu = deque()
@@ -40,4 +39,3 @@ sys.stdout.write를 사용하면 print보다 더 빠르다고 한다. 대신 뒤
 sys.stdout.write는 print로 aliasing이 잘 안되는 것 같은데 다른 방법 써보면 좋을 듯
 python에서 list.pop(0)는 시간복잡도가 O(N)으로 느리다. 따라서 이 경우 deque를 사용하거나 따로 cursor를 관리해야 할 것 같다.
 '''
-

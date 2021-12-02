@@ -21,3 +21,19 @@ while len(l) > 0:
 print(cnt)
 
 # 일단 Greedy 접근이 맞음
+
+# 1등 답을 보니까 list.index 함수를 씀. 시간 복잡도 측면에서 더 좋은 방법은 없는 듯
+'''
+1등 코드 참고
+n, m = map(int, input().split())
+dq = [i for i in range(1, n+1)]
+
+ans = 0
+
+for find in map(int, input().split()):
+    ix = dq.index(find)
+    ans += min(len(dq[ix:]), len(dq[:ix]))
+    dq = dq[ix+1:] + dq[:ix]
+
+print(ans)
+'''

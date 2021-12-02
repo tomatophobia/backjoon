@@ -8,7 +8,7 @@ st = []
 for i in range(t):
     cmd = input().rstrip().split(' ')
     if cmd[0] == 'push':
-       st.append(cmd[1])
+        st.append(cmd[1])
     elif cmd[0] == 'pop':
         if len(st) == 0:
             print(-1)

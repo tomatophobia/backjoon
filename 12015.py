@@ -26,6 +26,7 @@ print(len(active))
 
 '''
 PyPy3로만 통과함.. ㅅㅂ
+Python3로 통과한 사람들 보니까 bisect라는 라이브러리 써서 바이너리 서치를 하는 것 같고 그거 안쓴 사람은 처음 리스트 입력받을 때 map 결과를 바로 리스트로 변환 안하고 iterator처럼 씀
 https://eine.tistory.com/entry/가장-긴-증가하는-부분-수열LIS-Longest-Increasing-Subsequence
 https://www.geeksforgeeks.org/longest-monotonically-increasing-subsequence-size-n-log-n/
 

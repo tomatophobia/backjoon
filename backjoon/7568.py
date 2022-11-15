@@ -10,4 +10,4 @@ for i in student_list:
     for j in student_list:
         if i[0] < j[0] and i[1] < j[1]:
             rank += 1
-    print(rank, end = " ")
+    print(rank, end=" ")

@@ -2,3 +2,5 @@
 .idea
 .vscode
 dh/ss/**
+toss/**
+__pycache__

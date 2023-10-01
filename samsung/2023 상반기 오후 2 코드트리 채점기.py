@@ -6,8 +6,7 @@ import heapq
 
 Q = int(input())
 grader = []
-waiting_queue = []
-domain_status = {}  # domain -> [채점 중, 쿨타임]
+domain_status = {}  # domain -> [채점 중, 쿨타임, 대기 큐]
 url_status = {}  # url -> [대기 중]
 N = 0
 
@@ -25,8 +24,7 @@ for _ in range(Q):
         domain, pid = u0.split('/')
         pid = int(pid)
         url_status[u0] = [True]
-        domain_status[domain] = [False, 0]
-        heapq.heappush(waiting_queue, (1, 0, domain, pid))
+        domain_status[domain] = [False, 0, [[1, 0, pid]]]
     elif cmd[0] == '200':
         t, p, u = int(cmd[1]), int(cmd[2]), cmd[3]
         domain, pid = u.split('/')
@@ -40,10 +38,10 @@ for _ in range(Q):
             us[0] = True
         ds = domain_status.get(domain)
         if ds is None:
-            domain_status[domain] = [False, 0]
-        heapq.heappush(waiting_queue, (p, t, domain, pid))  # log(50000)
+            domain_status[domain] = [False, 0, [[p, t, pid]]]
+        else:
+            heapq.heappush(ds[2], [p, t, pid])
     elif cmd[0] == '300':
-        time1 = time()
         t = int(cmd[1])
         rest_grader = -1
         for n in range(1, N + 1):  # 50000 -> 근데 직접 프린트 해보면 거의 ~100
@@ -52,27 +50,20 @@ for _ in range(Q):
                 break
         if rest_grader == -1:
             continue
-        fail = []
-        time2 = time()
-        while len(waiting_queue) > 0:
-            element = heapq.heappop(waiting_queue)  # log(50000)
-            _, _, domain, pid = element
-            ds = domain_status[domain]  # log(300)
-            if not ds[0] and t >= ds[1]:
-                ds[0] = True
-                url_status[domain + "/" + str(pid)] = [False]  # log(50000)
-                grader[rest_grader].append([t, domain, pid])
-                break
-            fail.append(element)
-        time3 = time()
-        waiting_queue = waiting_queue + fail  # 실패하는 수가 많을까? ~5000 일단 보류
-        heapq.heapify(waiting_queue)  # log(50000)
-        time4 = time()
-        print("---")
-        print(f'{time2 - time1:.5f}')
-        print(f'{time3 - time2:.5f}')
-        print(f'{time4 - time3:.5f}')
-        print(f'{time4 - time1:.5f}')
+        best_ds = None
+        best_domain = None
+        for domain, ds in domain_status.items():
+            if ds[0] or t < ds[1] or len(ds[2]) == 0:
+                continue
+            if best_ds is None or ds[2][0] < best_ds[2][0]:
+                best_ds = ds
+                best_domain = domain
+        if best_ds is None:
+            continue
+        best_ds[0] = True
+        _, _, pid = heapq.heappop(best_ds[2])
+        url_status[best_domain + "/" + str(pid)] = [False]
+        grader[rest_grader].append([t, best_domain, pid])
     elif cmd[0] == '400':
         t, jid = int(cmd[1]), int(cmd[2])
         if len(grader[jid]) == 0:
@@ -83,4 +74,7 @@ for _ in range(Q):
         ds[1] = s + 3 * (t - s)
     elif cmd[0] == '500':
         t = int(cmd[1])
-        # print(len(waiting_queue))
+        count = 0
+        for _, ds in domain_status.items():
+            count += len(ds[2])
+        print(count)
